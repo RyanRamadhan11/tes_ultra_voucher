@@ -1,0 +1,59 @@
+//Ryan Ramadhan
+
+//query postgresql
+
+CREATE DATABASE data_family;
+
+CREATE TABLE m_parent (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+
+//karena type data serial maka tidak perlu menginput id nya karena id akan terinput otomatis
+
+INSERT INTO m_parent (name) VALUES
+('Zaki'),
+('Ilham'),
+('Irwan'),
+('Arka');
+
+
+CREATE TABLE m_child (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    parent_id INT 
+);
+
+
+//menambahkan foreign key pada tabel child 
+
+ALTER TABLE m_child
+ADD CONSTRAINT fk_child_parent
+FOREIGN KEY (parent_id)
+REFERENCES m_parent(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+
+
+INSERT INTO m_child (name, parent_id) VALUES
+('Zaki', 2),
+('Ilham', NULL),
+('Irwan', 2),
+('Arka', 3);
+
+
+//query menampilkan data sesuai tabel
+
+SELECT ch.id, ch.name, p.name AS parent_name
+FROM m_child ch LEFT JOIN m_parent p
+ON ch.parent_id = p.id
+ORDER BY ch.id;
+
+ id | name  | parent_name 
+----+-------+-------------
+  1 | Zaki  | Ilham
+  2 | Ilham | 
+  3 | Irwan | Ilham
+  4 | Arka  | Irwan
